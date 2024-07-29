@@ -1,0 +1,21 @@
+{
+    "name": "Ozon helper",
+    "description": "will help with ozon",
+    "version": "v1-0.1",
+    "manifest_version": 3,
+    "icons": {
+        "48": "logo/48.png",
+        "128": "logo/128.png"
+    },
+    "action": {
+        "default_popup":"menu.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://seller.ozon.ru/app/postings/fbs*"],
+            "css": [],
+            "js": ["helpers/barcode/main.js"]
+        }
+    ],
+    "permissions": ["scripting", "activeTab"]
+}
