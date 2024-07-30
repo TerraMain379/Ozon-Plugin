@@ -87,8 +87,10 @@ function listGui() {
 
 function barcodesLogic() {
     parseTrs();
-    for (let tr of trs){
-        barcodeLogic(tr)
+    for (let tri in trs){
+        setTimeout(()=>{
+            barcodeLogic(trs[tri]);
+        },4000*tri);
     }
 
     document.prepend()
@@ -136,7 +138,7 @@ function barcodeLogic(tr) {
                         print_btn.click();
                         setTimeout(() => {
                             document.querySelector(".OZON-HELPER-IFRAME").remove();
-                        },300)
+                        },2000);
                     },300);
                 },10);
             },10);
