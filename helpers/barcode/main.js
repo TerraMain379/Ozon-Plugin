@@ -156,8 +156,8 @@ function barcodeLogic(tr) {
         if (iframe!=null) iframe.remove();
         iframe = document.createElement("iframe")//<iframe src=tr.links[n]></iframe>
         iframe.setAttribute("src",link);
-        iframe.setAttribute("height","500");
-        iframe.setAttribute("width","500");
+        iframe.setAttribute("height","10");
+        iframe.setAttribute("width","10");
         iframe.setAttribute("class","OZON-HELPER-IFRAME");
         tr.trBlock.prepend(iframe);
         iframe.onload = () => {
