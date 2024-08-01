@@ -96,7 +96,7 @@ function barcodesLogic() {
     document.prepend()
 }
 function barcodeLogic(tr) {
-    function searchFrameLogic(doc) {
+    function searchFrameLogic(doc, ifr) {
         function test() {
             setTimeout(barcodeLogic,2000);
         }
@@ -106,27 +106,31 @@ function barcodeLogic(tr) {
             let originArticul = doc.querySelector("#form-input-2").getAttribute("value");
             console.log("originArticul = " + originArticul);
             let trsBlock = doc.querySelector("div.index_table_2HkbK").children[0].children[1];
-            let trI = 0; while (trI<trsBlock.children.length) {
+            console.log(trsBlock);
+            console.log(trsBlock.children.length);
+            let trI = 0;
+            while (trI<trsBlock.children.length) {
+                console.log("while: " + trI);
                 let tr = trsBlock.children[trI];
-                if (!isElement(tr)) break;
+                console.log(tr);
                 let articul = tr.querySelector("div.index_whitespacePrewrap_1bUsS").textContent;
-                if (articul !== originArticul) trsBlock.removeChild(tr);
-                else trI++;
+                console.log("articul = " + articul);
+                if (articul === originArticul) break;
+                trI++;
             }
-
-            //console.log(trs);
+            return trI;
         }
         function barcodeLogic() {
             if (doc.querySelector("#form-input-2")==null) {
                 setTimeout(barcodeLogic,100);
                 return;
             }
-            searchFixLogic();
+            let fixIndex = searchFixLogic();
 
-            let btn = doc.querySelector("div.index_reference_12Opm");
+
+            let btn = doc.querySelectorAll("div.index_reference_12Opm")[fixIndex];
             console.log("clicking");
             btn.click();
-
             setTimeout(()=>{
                 let menu = doc.querySelector("div.index_actions_1PL2g");
                 let menu_btn = menu.children[menu.children.length-2];
@@ -137,8 +141,8 @@ function barcodeLogic(tr) {
                         let print_btn = doc.querySelectorAll("button.custom-button_button_1l2h7.custom-button__theme_primary_A885j.custom-button__size_normal_3DGX1.custom-button_textAlignCenter_3-4gd")[1];
                         print_btn.click();
                         setTimeout(() => {
-                            document.querySelector(".OZON-HELPER-IFRAME").remove();
-                        },2000);
+                            ifr.remove();
+                        },1800);
                     },300);
                 },10);
             },10);
@@ -152,13 +156,13 @@ function barcodeLogic(tr) {
         if (iframe!=null) iframe.remove();
         iframe = document.createElement("iframe")//<iframe src=tr.links[n]></iframe>
         iframe.setAttribute("src",link);
-        iframe.setAttribute("height","10");
-        iframe.setAttribute("width","10");
+        iframe.setAttribute("height","500");
+        iframe.setAttribute("width","500");
         iframe.setAttribute("class","OZON-HELPER-IFRAME");
         tr.trBlock.prepend(iframe);
         iframe.onload = () => {
             let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            searchFrameLogic(iframeDocument);
+            searchFrameLogic(iframeDocument,iframe);
         };
     }
 }
@@ -170,19 +174,26 @@ class TrData{
         this.trBlock = trBlock;
         this.articuls = [];
         this.links = [];
-        let articulsTextBlocks = trBlock.children[articulColumn].children[0].children;
+        let articulBlock = trBlock.children[articulColumn];
 
-        if (articulsTextBlocks !== null) {
-            for (let textBlock of articulsTextBlocks) {
-                let a = textBlock.children[0].children[0].children[0];
-                if (!isElement(a)) break;
-                this.articuls.push(a.textContent);
-                this.links.push(a.getAttribute("href")+"&ozonhelper=barcode");
+        let openBtn = articulBlock.querySelector(".button-module_text_Sj3v5");
+        if (openBtn!==null) openBtn.click();
 
+        setTimeout(()=>{
+            let articulsTextBlocks = articulBlock.children[0].children;
+
+            if (articulsTextBlocks !== null) {
+                for (let textBlock of articulsTextBlocks) {
+                    let a = textBlock.children[0].children[0].children[0];
+                    if (!isElement(a)) break;
+                    this.articuls.push(a.textContent);
+                    this.links.push(a.getAttribute("href")+"&ozonhelper=barcode");
+
+                }
+                console.log(this.articuls);
+                console.log(this.links);
             }
-            console.log(this.articuls);
-            console.log(this.links);
-        }
+        },0);
     }
 }
 function parseTrs() {
@@ -210,7 +221,6 @@ function parseTrs() {
 
 function isElement(obj) {
     try {
-        //Using W3 DOM2 (works for FF, Opera and Chrome)
         return obj instanceof HTMLElement;
     }
     catch(e){
