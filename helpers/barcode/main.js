@@ -1,6 +1,6 @@
-function start() {
-    mainGui();
-}
+const timeoutFromBarcodesLogic = 4000;
+const form_input = "form-input-4";
+
 function mainGui() {
     function barcodesButton() {
         genBtn("Штрих-коды", () => {
@@ -52,7 +52,6 @@ function mainGui() {
         }
     },300);
 }
-
 function listGui() {
     for (let el of document.querySelectorAll(".OZON-HELPER-CLASS")){
         el.remove();
@@ -90,10 +89,8 @@ function barcodesLogic() {
     for (let tri in trs){
         setTimeout(()=>{
             barcodeLogic(trs[tri]);
-        },4000*tri);
+        },timeoutFromBarcodesLogic*tri);
     }
-
-    document.prepend()
 }
 function barcodeLogic(tr) {
     function searchFrameLogic(doc, ifr) {
@@ -103,7 +100,7 @@ function barcodeLogic(tr) {
         function searchFixLogic() {
             console.log("downloading barcode...")
 
-            let originArticul = doc.querySelector("#form-input-2").getAttribute("value");
+            let originArticul = doc.querySelector("#"+form_input).getAttribute("value");
             console.log("originArticul = " + originArticul);
             let trsBlock = doc.querySelector("div.index_table_2HkbK").children[0].children[1];
             console.log(trsBlock);
@@ -121,7 +118,7 @@ function barcodeLogic(tr) {
             return trI;
         }
         function barcodeLogic() {
-            if (doc.querySelector("#form-input-2")==null) {
+            if (doc.querySelector("#"+form_input)==null) {
                 setTimeout(barcodeLogic,100);
                 return;
             }
@@ -237,4 +234,4 @@ function gen(name,classes) {
     return el;
 }
 
-start()
+mainGui();
