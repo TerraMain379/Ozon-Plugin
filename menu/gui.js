@@ -1,7 +1,7 @@
 const timeoutFromBarcodesLogic = 4000;
 const form_input = "form-input-4";
 
-function mainGui() {
+export function mainGui() {
     function barcodesButton() {
         genBtn("Штрих-коды", () => {
             barcodesLogic();
@@ -42,13 +42,17 @@ function mainGui() {
     }
     function testGenBtn() {
         let btnLine = document.querySelector("div.fbs_headerControls_1p3NI");
-        return btnLine!=null;
+        if (btnLine!=null){
+            return btnLine.children.length < 4;
+        }
+        return false;
     }
+
     let int = setInterval(() => {
         if (testGenBtn()) {
             barcodesButton();
             guiButton();
-            clearInterval(int);
+            //clearInterval(int);
         }
     },300);
 }
@@ -93,74 +97,18 @@ function barcodesLogic() {
     }
 }
 function barcodeLogic(tr) {
-    function searchFrameLogic(doc, ifr) {
-        function test() {
-            setTimeout(barcodeLogic,2000);
-        }
-        function searchFixLogic() {
-            console.log("downloading barcode...")
-
-            let originArticul = doc.querySelector("#"+form_input).getAttribute("value");
-            console.log("originArticul = " + originArticul);
-            let trsBlock = doc.querySelector("div.index_table_2HkbK").children[0].children[1];
-            console.log(trsBlock);
-            console.log(trsBlock.children.length);
-            let trI = 0;
-            while (trI<trsBlock.children.length) {
-                console.log("while: " + trI);
-                let tr = trsBlock.children[trI];
-                console.log(tr);
-                let articul = tr.querySelector("div.index_whitespacePrewrap_1bUsS").textContent;
-                console.log("articul = " + articul);
-                if (articul === originArticul) break;
-                trI++;
-            }
-            return trI;
-        }
-        function barcodeLogic() {
-            if (doc.querySelector("#"+form_input)==null) {
-                setTimeout(barcodeLogic,100);
-                return;
-            }
-            let fixIndex = searchFixLogic();
-
-
-            let btn = doc.querySelectorAll("div.index_reference_12Opm")[fixIndex];
-            console.log("clicking");
-            btn.click();
-            setTimeout(()=>{
-                let menu = doc.querySelector("div.index_actions_1PL2g");
-                let menu_btn = menu.children[menu.children.length-2];
-                menu_btn.click();
-                setTimeout(()=>{
-                    doc.querySelectorAll("input.index_input_4rDBe")[1].click();
-                    setTimeout(()=>{
-                        let print_btn = doc.querySelectorAll("button.custom-button_button_1l2h7.custom-button__theme_primary_A885j.custom-button__size_normal_3DGX1.custom-button_textAlignCenter_3-4gd")[1];
-                        print_btn.click();
-                        setTimeout(() => {
-                            ifr.remove();
-                        },1800);
-                    },300);
-                },10);
-            },10);
-
-        }
-        test();
+    function getArticulData(articul) {
+        console.log("GET DATA FROM: " + articul);
+        let path = "https://localhost:8080/info/name/"+articul;
+        path = "http://localhost:8080/info/all/21230-1701138-10";
+        console.log("path: "+path);
+        fetch(path)
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
     }
-
-    for (let link of tr.links) {
-        let iframe = document.querySelector("#ifr");
-        if (iframe!=null) iframe.remove();
-        iframe = document.createElement("iframe")//<iframe src=tr.links[n]></iframe>
-        iframe.setAttribute("src",link);
-        iframe.setAttribute("height","10");
-        iframe.setAttribute("width","10");
-        iframe.setAttribute("class","OZON-HELPER-IFRAME");
-        tr.trBlock.prepend(iframe);
-        iframe.onload = () => {
-            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            searchFrameLogic(iframeDocument,iframe);
-        };
+    for (let articul of tr.articuls){
+        let data = getArticulData(articul);
     }
 }
 
@@ -198,7 +146,7 @@ function parseTrs() {
     function getArticulColumn() {
         let tableMainLine = document.querySelector("tr" +
             ".table-row-module_row_JSSv0");
-        articulColumnNum = 0;
+        let articulColumnNum = 0;
         for (let td of tableMainLine.children) {
             if (td.textContent.startsWith("Артикул, количество")) break;
             articulColumnNum++;
@@ -234,4 +182,4 @@ function gen(name,classes) {
     return el;
 }
 
-mainGui();
+//mainGui();
