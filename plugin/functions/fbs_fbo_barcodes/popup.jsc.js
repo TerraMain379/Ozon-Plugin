@@ -1,4 +1,4 @@
-import {sendJS,getTabData} from "./api/chrome.js";
+//JSC:::import functions/fbs_fbo_barcodes/api.jsc.js
 
 let list = document.querySelector("#list");
 
@@ -65,36 +65,7 @@ document.querySelector("#clear").addEventListener("click", () => {
     },0);
 });
 document.querySelector("#gen").addEventListener("click", () => {
-    generate();
-})
-function generate() {
-    let arts = getArticuls();
-    let body = "{\"articuls\":[";
-    for (let i = 0; i < arts.length; i++) {
-        body+='"'+arts[i]+'"';
-        if (i===arts.length-1) break;
-        body+=",";
-    }
-    body+="]}";
-    fetch('http://localhost:8080/barcode/generatelist', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: body
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert("Успешно сохранено!\n"+data);
-        })
-        .catch(error => {
-            alert("Произошла какая то ошибка...\n"+error);
-        });
-}
+    generate(getArticuls());
+});
 
 loadData();

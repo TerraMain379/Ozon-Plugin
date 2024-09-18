@@ -1,0 +1,26 @@
+{
+    "name": "Ozon helper",
+    "description": "will help with ozon",
+    "version": "2.6.0",
+    "manifest_version": 3,
+    "icons": {
+        "48": "logo/48.png",
+        "128": "logo/128.png"
+    },
+    "action": {
+        "default_popup":"popup/popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://seller.ozon.ru/app/postings/fbs*"],
+            "css": [],
+            "js": ["functions/fbs_fbo_barcodes/content_fbs.jsc.js"]
+        },
+        {
+            "matches": ["https://seller.ozon.ru/app/supply/orders/*"],
+            "css": [],
+            "js": ["functions/fbs_fbo_barcodes/content_fbo.jsc.js"]
+        }
+    ],
+    "permissions": ["scripting", "activeTab"]
+}
