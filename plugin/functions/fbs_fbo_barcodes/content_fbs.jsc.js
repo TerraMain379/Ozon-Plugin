@@ -2,8 +2,11 @@
 //JSC:::import api/gui.js
 
 let int = setInterval(() => {
-    let list = document.querySelector(".bulk-actions-laputa_bulkLaputaControls_1i7dq div .dropdown-wrapper-module_dropdownWrapper_RZZR3 div div div div div div");
-    if (list!=null){
+    let list = document.querySelector(".laputa-module_laputa_GEPac");
+    if (list!==null) list = list.querySelector(".dropdown-wrapper-module_dropdownWrapper_RZZR3");
+    if (list!==null) list = list.querySelector(".dropdown-module_wrapper_w9ET7");
+
+    if (list!==null){
         let btn = document.querySelector(".OZONHELPER-dropbtn");
         if (btn == null){
             btn = genTagFromTag(list,"div","OZONHELPER-dropbtn data-cell-module_dataCell_z0Yiq dropdown-item-module_dropdownItem_99nD2 dropdown-item-module_size-500_pB5xD")

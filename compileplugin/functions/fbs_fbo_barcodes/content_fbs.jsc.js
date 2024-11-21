@@ -1,22 +1,22 @@
 async function request(url, method, body, headerParams, okAction, errAction, conErrAction) {
     console.log("body: " + JSON.stringify(body));
-    fetch(url, {
-        method: method,
-        headers: headerParams,
-        body: JSON.stringify(body)
-    })
-        .then(response => {
-            if (!response.ok) {
-                conErrAction(response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            okAction(data);
-        })
-        .catch(error => {
-            errAction(error);
+    try {
+        // Отправка запроса с помощью fetch
+        const response = await fetch(url, {
+            method: method,
+            headers: headerParams,
+            body: JSON.stringify(body)
         });
+        if (!response.ok) {
+            conErrAction(response);
+        }
+        else {
+            let data = await response.json();
+            okAction(data);
+        }
+    } catch (error) {
+        errAction(error);
+    }
 }
 async function ozonRequest(url, method, body, clientId, apiKey, okAction, errAction){
     if (url.startsWith("/")){
@@ -34,14 +34,14 @@ function generate(arts) {
     request("http://localhost:8080/barcode/generatelist","POST",{
         "articuls": arts
     },{},(data) => {
-        alert("Успешно сохранено!");
+        alert("Успешно сохранено!\nПуть к файлу: " + data["path"]);
     },(err) => {
         alert("Произошла ошибка на сервере");
         console.log("server error: " + err);
     },(status) => {
         alert("не удалось соединиться с сервером!");
         console.log("connection error: " + status);
-    })
+    });
 }
 
 //JSC::: import api/gui.js
@@ -64,8 +64,11 @@ function genClickActionTag(tagName, classParamValue, action) {
 
 
 let int = setInterval(() => {
-    let list = document.querySelector(".bulk-actions-laputa_bulkLaputaControls_1i7dq div .dropdown-wrapper-module_dropdownWrapper_RZZR3 div div div div div div");
-    if (list!=null){
+    let list = document.querySelector(".laputa-module_laputa_GEPac");
+    if (list!==null) list = list.querySelector(".dropdown-wrapper-module_dropdownWrapper_RZZR3");
+    if (list!==null) list = list.querySelector(".dropdown-module_wrapper_w9ET7");
+
+    if (list!==null){
         let btn = document.querySelector(".OZONHELPER-dropbtn");
         if (btn == null){
             btn = genTagFromTag(list,"div","OZONHELPER-dropbtn data-cell-module_dataCell_z0Yiq dropdown-item-module_dropdownItem_99nD2 dropdown-item-module_size-500_pB5xD")

@@ -18,23 +18,23 @@ function genClickActionTag(tagName, classParamValue, action) {
 
 async function request(url, method, body, headerParams, okAction, errAction, conErrAction) {
     console.log("body: " + JSON.stringify(body));
-    fetch(url, {
-        method: method,
-        headers: headerParams,
-        body: JSON.stringify(body)
-    })
-        .then(response => {
-            if (!response.ok) {
-                conErrAction(response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            okAction(data);
-        })
-        .catch(error => {
-            errAction(error);
+    try {
+        // Отправка запроса с помощью fetch
+        const response = await fetch(url, {
+            method: method,
+            headers: headerParams,
+            body: JSON.stringify(body)
         });
+        if (!response.ok) {
+            conErrAction(response);
+        }
+        else {
+            let data = await response.json();
+            okAction(data);
+        }
+    } catch (error) {
+        errAction(error);
+    }
 }
 async function ozonRequest(url, method, body, clientId, apiKey, okAction, errAction){
     if (url.startsWith("/")){
@@ -66,7 +66,7 @@ let int = setInterval(() => {
                 "button-module_text_Sj3v5"
             );
             span.textContent = "штрихкоды";
-            document.querySelector(".order-composition-module_footer_2TRSt").appendChild(btn);
+            document.querySelector(".order-composition-module_footer_04K8j").appendChild(btn);
         }
     }
 }, 50);
