@@ -66,7 +66,7 @@ let int = setInterval(() => {
                 "button-module_text_Sj3v5"
             );
             span.textContent = "штрихкоды";
-            document.querySelector(".order-composition-module_footer_04K8j").appendChild(btn);
+            document.querySelector(".order-composition-module_footer_2TRSt").appendChild(btn);
         }
     }
 }, 50);
